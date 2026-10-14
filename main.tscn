@@ -1,0 +1,179 @@
+[gd_scene format=3 uid="uid://d1xr5vbiggvsp"]
+
+[ext_resource type="PackedScene" uid="uid://bqhkpj71gc3ag" path="res://assets/models/ships/ship-large.glb" id="1_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://blfnskxllboaa" path="res://assets/models/ships/ship-small.glb" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="2_7mycd"]
+[ext_resource type="PackedScene" uid="uid://bcunfyv7deusl" path="res://assets/models/ships/ship-medium.glb" id="2_lquwl"]
+[ext_resource type="Script" uid="uid://ca1eq16cejg6l" path="res://components/selector_manager.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_272bh"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_5vw27"]
+
+[sub_resource type="GDScript" id="GDScript_wyeb1"]
+resource_name = "world"
+script/source = "extends Node3D
+
+func _on_selector_manager_picked(object: Node3D) -> void:
+	$Label.text = object.name
+
+func _on_selector_manager_unpicked(object: Node3D) -> void:
+	$Label.text = \"\"
+"
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
+ground_bottom_color = Color(0.39215687, 0.92941177, 1, 1)
+ground_horizon_color = Color(0.13421145, 0.72721136, 0.8539179, 1)
+
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("ProceduralSkyMaterial_h2yge")
+
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+sdfgi_enabled = true
+sdfgi_read_sky_light = false
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wyeb1"]
+size = Vector3(5, 10, 12)
+
+[sub_resource type="Resource" id="Resource_kek77"]
+script = ExtResource("5_5vw27")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ry7xg"]
+albedo_color = Color(0.32156864, 0.7607843, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wyeb1"]
+material = SubResource("StandardMaterial3D_ry7xg")
+size = Vector2(1000, 1000)
+
+[sub_resource type="Resource" id="Resource_272bh"]
+script = ExtResource("5_5vw27")
+
+[node name="World" type="Node3D" unique_id=1946581784]
+script = SubResource("GDScript_wyeb1")
+
+[node name="SelectorManager" type="Node" parent="." unique_id=1889729438]
+script = ExtResource("4_1bvp3")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=235990178]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1791459391]
+environment = SubResource("Environment_lquwl")
+
+[node name="MainCam" type="Camera3D" parent="." unique_id=1873310373]
+transform = Transform3D(0.39176983, -0.7401364, 0.5465479, -2.9802322e-08, 0.5940329, 0.80444074, -0.92006326, -0.31515563, 0.23272413, 12.830091, 20.073395, 10.795425)
+top_level = true
+
+[node name="PhantomCameraHost" type="Node" parent="MainCam" unique_id=1671830397]
+process_priority = 300
+process_physics_priority = 300
+physics_interpolation_mode = 1
+script = ExtResource("2_7mycd")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[node name="Flota" type="Node3D" parent="." unique_id=1634621778]
+
+[node name="SantaMaria" type="Node3D" parent="Flota" unique_id=73084405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.97641)
+metadata/_edit_group_ = true
+
+[node name="ship-large2" parent="Flota/SantaMaria" unique_id=1279382097 instance=ExtResource("1_1bvp3")]
+
+[node name="Area3D" type="Area3D" parent="Flota/SantaMaria" unique_id=2135160104 groups=["pickable"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Flota/SantaMaria/Area3D" unique_id=1846306866]
+shape = SubResource("BoxShape3D_wyeb1")
+debug_color = Color(0.87800425, 0.0003958273, 0.83008283, 0.41960785)
+
+[node name="Cam" type="Node3D" parent="Flota/SantaMaria" unique_id=1397698116 node_paths=PackedStringArray("follow_target", "look_at_target")]
+transform = Transform3D(-0.9999999, 0, 0, 0, 0.8944272, 0.4472136, 0, 0.4472136, -0.89442706, 0, 10, -20)
+script = ExtResource("4_272bh")
+follow_target = NodePath("..")
+look_at_mode = 2
+look_at_target = NodePath("..")
+tween_resource = SubResource("Resource_kek77")
+look_at_damping = true
+look_at_damping_value = 0.4
+align_transform_with_view = Callable()
+align_rotation_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[node name="Pinta" type="Node3D" parent="Flota" unique_id=1999594348]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.646187, 0, 0)
+metadata/_edit_group_ = true
+
+[node name="ship-medium2" parent="Flota/Pinta" unique_id=912120253 instance=ExtResource("2_lquwl")]
+
+[node name="Area3D" type="Area3D" parent="Flota/Pinta" unique_id=492684399 groups=["pickable"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Flota/Pinta/Area3D" unique_id=1483459006]
+shape = SubResource("BoxShape3D_wyeb1")
+debug_color = Color(0.87800425, 0.0003958273, 0.83008283, 0.41960785)
+
+[node name="Cam" type="Node3D" parent="Flota/Pinta" unique_id=1893509424 node_paths=PackedStringArray("look_at_target")]
+transform = Transform3D(-0.99999976, 0, 0, 0, 0.8944271, 0.44721353, 0, 0.44721356, -0.89442694, 0, 10, -20)
+script = ExtResource("4_272bh")
+look_at_mode = 2
+look_at_target = NodePath("..")
+tween_resource = SubResource("Resource_kek77")
+look_at_damping = true
+look_at_damping_value = 0.4
+align_transform_with_view = Callable()
+align_rotation_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[node name="Niña" type="Node3D" parent="Flota" unique_id=1034151648]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.0301, 0, 0)
+metadata/_edit_group_ = true
+
+[node name="ship-small2" parent="Flota/Niña" unique_id=2018356358 instance=ExtResource("1_ig7tw")]
+
+[node name="Area3D" type="Area3D" parent="Flota/Niña" unique_id=1715866325 groups=["pickable"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Flota/Niña/Area3D" unique_id=726646202]
+shape = SubResource("BoxShape3D_wyeb1")
+debug_color = Color(0.87800425, 0.0003958273, 0.83008283, 0.41960785)
+
+[node name="Cam" type="Node3D" parent="Flota/Niña" unique_id=51172664 node_paths=PackedStringArray("look_at_target")]
+transform = Transform3D(-0.9999955, 0, 0, 0, 0.8944272, 0.44721353, 0, 0.4472136, -0.89442694, 0, 10, -20)
+script = ExtResource("4_272bh")
+look_at_mode = 2
+look_at_target = NodePath("..")
+tween_resource = SubResource("Resource_kek77")
+look_at_damping = true
+look_at_damping_value = 0.4
+align_transform_with_view = Callable()
+align_rotation_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[node name="Mar" type="MeshInstance3D" parent="." unique_id=1994853113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PlaneMesh_wyeb1")
+
+[node name="Label" type="Label" parent="." unique_id=1510347806]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 32.0
+offset_right = 20.0
+offset_bottom = 55.0
+grow_horizontal = 2
+
+[node name="FlotaCam" type="Node3D" parent="." unique_id=6056494 node_paths=PackedStringArray("look_at_targets")]
+transform = Transform3D(0.3917698, -0.7401363, 0.5465477, -2.980232e-08, 0.5940328, 0.8044405, -0.9200632, -0.3151556, 0.23272406, 12.830091, 20.073395, 10.795425)
+script = ExtResource("4_272bh")
+priority = 10
+look_at_mode = 3
+look_at_targets = [NodePath("../Flota/SantaMaria"), NodePath("../Flota/Pinta"), NodePath("../Flota/Niña")]
+tween_resource = SubResource("Resource_272bh")
+look_at_damping = true
+look_at_damping_value = 0.4
+align_transform_with_view = Callable()
+align_rotation_with_view = Callable()
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
+
+[connection signal="picked" from="SelectorManager" to="." method="_on_selector_manager_picked"]
+[connection signal="unpicked" from="SelectorManager" to="." method="_on_selector_manager_unpicked"]
